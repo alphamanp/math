@@ -44,12 +44,13 @@
         <div ng-show="!inProgress">
           <p>
             Хочешь выучить таблицу умножения? Или уже выучил и хочешь проверить свои знания? 
-            Выбирай свой режим и начинай!
+            Укажи количество испытаний и начинай!
           </p>
 
           <div class="card">
             <div class="card-header">Настройки</div>
             <div class="card-body">
+              <div ng-if=0>
               <b>Режим</b>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="mode" id="modeLearn" ng-value="'learn'" ng-model="settings.mode">
@@ -62,6 +63,7 @@
                 <label class="form-check-label" for="modeFight">
                   Проверка
                 </label>
+              </div>
               </div>
 
               <div>
@@ -189,14 +191,18 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Тыдыщь!</h5>
+          <h5 class="modal-title" id="staticBackdropLabel">Готово!</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
+          <div class="mb-3">Ты верно решил {{ scores.successCount }} из {{ scores.taskCount }} примеров.</div>
+          <div ng-if="scores.successCount == scores.taskCount">Великолепный результат!</div>
+          <div ng-if="(scores.successCount >= scores.taskCount*0.9) && (scores.successCount != scores.taskCount)">Хороший результат, до великолепного осталось чуть-чуть...</div>
+          <div ng-if="(scores.successCount >= scores.taskCount*0.5) && (scores.successCount < scores.taskCount*0.9)">Попробуй еще раз.</div>
+          <div ng-if="scores.successCount < scores.taskCount*0.5">Тебе надо подучить и попробовать еще раз.</div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Понятно</button>
         </div>
       </div>
     </div>
