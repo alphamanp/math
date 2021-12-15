@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html ng-app="counter"> 
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Сосчитай-ка!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="lib\bootstrap\bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="styles.css">
+  <script src="lib\bootstrap\bootstrap.bundle.min.js"></script>
+  <script src="lib\angular\angular.min.js"></script>
+  <script src="quotes.js"></script>  
+  <script src="main.js"></script>
+</head>
+<body ng-controller="mainController">
+  <div class="container-fluid h-auto">
+    <!-- шапка -->
+    <div class="row pt-3 bg-light border-bottom">
+      <div class="col-12 col-sm-3"><h2><i>Сосчитай-ка!</i></h2></div>
+      <div class="col-12 col-sm-9">
+        <figure class="text-end">
+          <blockquote class="blockquote">
+            <p class="small">{{ quote.text }}</p>
+          </blockquote>
+          <figcaption class="blockquote-footer">
+            <cite title="{{ quote.author }}">{{ quote.author }}</cite>
+          </figcaption>
+        </figure>
+      </div>
+    </div>    
+
+    <div class="row gx-5 pt-0">
+
+      <div class="col-sm-3 d-none d-sm-grid px-0 mx-3 xborder-end">
+        <div class="list-group list-group-flush m-0 d-none">
+          <a class="list-group-item list-group-item-action" href="#">Таблица умножения</a>
+          <a class="list-group-item list-group-item-action" href="#">Сложение и вычитание</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm pt-3">
+        <h3>Таблица умножения</h3>
+
+        <div ng-show="!inProgress">
+          <p>
+            Хочешь выучить таблицу умножения? Или уже выучил и хочешь проверить свои знания? 
+            Выбирай свой режим и начинай!
+          </p>
+
+          <div class="card">
+            <div class="card-header">Настройки</div>
+            <div class="card-body">
+              <b>Режим</b>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="mode" id="modeLearn" ng-value="'learn'" ng-model="settings.mode">
+                <label class="form-check-label" for="modeLearn">
+                  Обучение
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="mode" id="modeFight" ng-value="'fight'" ng-model="settings.mode">
+                <label class="form-check-label" for="modeFight">
+                  Проверка
+                </label>
+              </div>
+
+              <div>
+                Количество испытаний: <input ng-model="settings.maxTaskCount" style="width: 50px;">
+              </div> 
+            </div>
+          </div>
+
+          <p class="text-end mt-3">
+            <button class="btn btn-success rounded" type="button" ng-click="start()">
+              Начать
+            </button>
+          </p>
+
+        </div>  
+              
+        <div ng-show="inProgress">
+
+          <h5 class="mt-4">Пример {{ scores.taskCount }} из {{ settings.maxTaskCount }}:</h5>
+
+          <div class="row mt-5 mx-0">
+            <div class="col-2 text-center"><h2>{{ task.v1 }}</h2></div>
+            <div class="col-1 text-center"><h2>*</h2></div>
+            <div class="col-2 text-center"><h2>{{ task.v2 }}</h2></div>
+            <div class="col-1"><h2>=</h2></div>
+            <div class="col-6"><input class="form-control" ng-model="task.answer" ng-keydown="($event.which===13)&&okClick()"
+              style="font-size: 2rem; font-weight: 500;"></div>
+            <!-- <div class="col-6"><h2>{{ task.answer }}</h2></div> -->
+          </div>
+
+          <div class="container mt-5">
+            <div class="row justify-content-center m-2">
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('1')">1</div></div>
+              <div class="col-1"></div>
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('2')">2</div></div>
+              <div class="col-1"></div>
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('3')">3</div></div>
+            </div>
+            <div class="row justify-content-center m-2">
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('4')">4</div></div>
+              <div class="col-1"></div>
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('5')">5</div></div>
+              <div class="col-1"></div>
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('6')">6</div></div>
+            </div>
+            <div class="row justify-content-center m-2">
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('7')">7</div></div>
+              <div class="col-1"></div>
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('8')">8</div></div>
+              <div class="col-1"></div>
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('9')">9</div></div>
+            </div>
+            <div class="row justify-content-center m-2">
+              <div class="col-3 text-center">
+                <div class="btn btn-outline-success py-3 px-4" ng-click="backspaceClick()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backspace" viewBox="0 0 16 16">
+                    <path d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z"/>
+                    <path d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="col-1"></div>
+              <div class="col-3 text-center"><div class="btn btn-outline-success py-3 px-4" ng-click="pinPadClick('0')">0</div></div>
+              <div class="col-1"></div>
+              <div class="col-3 text-center">
+                <div class="btn btn-outline-success py-3 px-4" ng-click="okClick()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>  
+
+        </div>       
+                
+      </div>
+
+      <div class="col-12 col-sm-4 pt-3">
+
+        <div class="card">
+          <div class="card-header">Статистика</div>
+          <div class="card-body container">
+            <div class="d-flex flex-row align-items-center justify-content-between mb-2">
+              <div class="text-muted small">Количество ответов / всего примеров</div>
+              <div><b>{{ scores.taskCount }}</b> / <b>{{ settings.maxTaskCount }}</b></div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-between mb-2">
+              <div class="text-muted small">Количество ошибок / правильных</div>
+              <div><b class="text-danger">{{ scores.errorCount }}</b> / <b class="text-success">{{ scores.successCount }}</b></div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-between mb-2">
+              <div class="text-muted small">Среднее время ответа</div>
+              <div><b>{{ scores.avgTime | date : 'mm:ss.sss' }}</b></div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-between">
+              <div class="text-muted small">Время ответа последней попытки</div>
+              <div><b>{{ tasks.length > 0 ? tasks[tasks.length-1].answerTime : 0 | date : 'mm:ss.sss' }}</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">Результаты</div>
+            <div class="card-body container">
+              <div class="d-flex flex-row align-items-center justify-content-between" 
+                ng-repeat="task in tasks | orderBy : 'taskNumber' : true ">
+                <div class="text-left">
+                   <span ng-show="0" class="me-2 text-right" style="width: 3rem;">{{ answer.number }})</span>
+                   {{ task.v1 }} * {{ task.v2 }} = {{ task.answer }}
+                </div>
+                <div class="text-right" ng-class="(task.result ? 'text-success' : 'text-danger')">
+                  <b>{{ (task.result ? 'верно' : 'ошибка') }}</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+      </div>
+    </div>    
+  </div>   
+  
+  <!-- сообщение -->
+  <div class="modal fade" id="modalMsg" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Тыдыщь!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

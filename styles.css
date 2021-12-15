@@ -1,0 +1,24 @@
+.button {
+    border-width: 1px;
+    border-radius: 5px;
+    border-style: solid;
+    padding: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+    text-align: center;
+    color: seashell;
+    background-color: seagreen;
+    font-weight: bold;
+}
+
+.pinPad {
+    cursor: pointer;
+    text-align: center;
+    font-size: 14pt;
+}
+
+.task {
+    font-size: 20pt;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
